@@ -32,7 +32,7 @@ public class FilmController {
         film.setId(getNextId());
         LocalDate date = film.getReleaseDate();
         LocalDate localDateTime = LocalDate.of(1895, 12, 28);
-        if(date.isBefore(localDateTime)) {
+        if (date.isBefore(localDateTime)) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата выхода фильма не может быть раньше чем 1895-12-28");
         }
         films.add(film);
@@ -42,7 +42,7 @@ public class FilmController {
     @RequestMapping(path = "/update", method = RequestMethod.PATCH)
     public Film updateFilm(@RequestBody Film film) {
         int id = film.getId();
-        for(Film f : films) {
+        for (Film f : films) {
             if (f.getId() == id) {
                 films.remove(f);
                 films.add(film);

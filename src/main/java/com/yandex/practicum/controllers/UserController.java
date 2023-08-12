@@ -31,7 +31,7 @@ public class UserController {
     @ExceptionHandler(ValidationException.class)
     public User createUser(@Valid @RequestBody User user) {
         user.setId(getNextId());
-        if(user.getName().isBlank()) {
+        if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
         users.add(user);
@@ -41,7 +41,7 @@ public class UserController {
     @RequestMapping(path = "/update", method = RequestMethod.PATCH)
     public User updateUser(@Valid @RequestBody User user) {
         int id = user.getId();
-        for(User u : users) {
+        for (User u : users) {
             if (u.getId() == id) {
                 users.remove(u);
                 users.add(user);
