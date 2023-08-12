@@ -2,52 +2,59 @@ package com.yandex.practicum.controllers;
 
 import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.model.User;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
 @Slf4j
 public class UserController {
 
-    List<User> users = new ArrayList<>();
+    Map<Integer, User> users = new HashMap<>();
     int id = 1;
 
-    @RequestMapping(path = "/users", method = RequestMethod.GET)
+    @GetMapping
     public List<User> getAllUsers() {
-        return users;
+        return new ArrayList<>(users.values());
     }
 
-    @RequestMapping(path = "/create", method = RequestMethod.POST)
+    @PostMapping
     @ExceptionHandler(ValidationException.class)
     public User createUser(@Valid @RequestBody User user) {
         user.setId(getNextId());
-        if (user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        users.add(user);
+        checkNameIsNotBlank(user);
+        users.put(user.getId(), user);
         return user;
     }
 
-    @RequestMapping(path = "/update", method = RequestMethod.PATCH)
+    @PatchMapping
     public User updateUser(@Valid @RequestBody User user) {
+        checkNameIsNotBlank(user);
         int id = user.getId();
-        for (User u : users) {
+        for (User u : users.values()) {
             if (u.getId() == id) {
-                users.remove(u);
-                users.add(user);
+                users.put(user.getId(), user);
             }
         }
         return user;
+    }
+
+    private void checkNameIsNotBlank(User user) {
+        if (user.getName().isBlank()) {
+        user.setName(user.getLogin());
+        }
     }
 
     private int getNextId() {
