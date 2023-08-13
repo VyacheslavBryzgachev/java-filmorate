@@ -44,7 +44,7 @@ public class FilmController {
     @PutMapping
     @ExceptionHandler(ValidationException.class)
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if(!(films.containsKey(film.getId()))) {
+        if (!(films.containsKey(film.getId()))) {
             throw new ValidationException(HttpStatus.INTERNAL_SERVER_ERROR, "Фильма с таким id не найдено");
         }
             checkFilmDate(film);
