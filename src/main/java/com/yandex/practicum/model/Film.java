@@ -30,7 +30,7 @@ public class Film {
 
 
     @JsonAnySetter
-    public void setAdditionalProperty(String key) {
+    public void setAdditionalProperty(String key, Object value) {
         if (!Arrays.asList("id", "name", "description", "releaseDate", "duration").contains(key)) {
             throw new IllegalArgumentException("Unknown property: " + key);
         }
