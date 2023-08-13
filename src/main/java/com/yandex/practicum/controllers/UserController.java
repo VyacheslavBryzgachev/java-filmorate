@@ -42,7 +42,7 @@ public class UserController {
     @PatchMapping
     public User updateUser(@Valid @RequestBody User user) {
         checkNameIsNotBlank(user);
-       if(users.containsKey(user.getId())) {
+       if (users.containsKey(user.getId())) {
            users.put(user.getId(), user);
        }
         return user;
