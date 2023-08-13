@@ -23,7 +23,6 @@ import java.util.Map;
 public class UserController {
 
     Map<Integer, User> users = new HashMap<>();
-    int id = 1;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -33,7 +32,6 @@ public class UserController {
     @PostMapping
     @ExceptionHandler(ValidationException.class)
     public User createUser(@Valid @RequestBody User user) {
-        user.setId(getNextId());
         checkNameIsNotBlank(user);
         users.put(user.getId(), user);
         return user;
@@ -53,9 +51,5 @@ public class UserController {
         if (user.getName().isBlank()) {
         user.setName(user.getLogin());
         }
-    }
-
-    private int getNextId() {
-        return  id++;
     }
 }

@@ -25,7 +25,6 @@ import java.util.Map;
 public class FilmController {
 
     Map<Integer, Film> films = new HashMap<>();
-    int id = 1;
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -35,7 +34,6 @@ public class FilmController {
     @PostMapping
     @ExceptionHandler(ValidationException.class)
     public Film createFilm(@Valid @RequestBody Film film) {
-        film.setId(getNextId());
         setFilmIdAndCheckDate(film);
         films.put(film.getId(), film);
         return film;
@@ -57,11 +55,5 @@ public class FilmController {
         if (date.isBefore(localDateTime)) {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата выхода фильма не может быть раньше чем 1895-12-28");
         }
-    }
-
-
-
-    private int getNextId() {
-        return id++;
     }
 }
