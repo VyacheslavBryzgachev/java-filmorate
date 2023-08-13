@@ -50,9 +50,9 @@ public class UserController {
     }
 
     private void checkNameIsNotBlank(User user) {
-        if (user.getName().isBlank() || user.getName().isEmpty()) {
-        user.setName(user.getLogin());
-        }
+            if (user.getName().isBlank() || user.getName().isEmpty()) {
+                user.setName(user.getLogin());
+            }
     }
 
     private int getNextId() {

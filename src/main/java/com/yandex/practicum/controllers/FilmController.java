@@ -43,7 +43,7 @@ public class FilmController {
 
     @PutMapping
     @ExceptionHandler(ValidationException.class)
-    public Film updateFilm(@RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         setFilmIdAndCheckDate(film);
         if (films.containsKey(film.getId())) {
         films.put(film.getId(), film);
