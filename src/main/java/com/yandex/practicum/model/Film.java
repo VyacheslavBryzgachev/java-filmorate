@@ -1,5 +1,6 @@
 package com.yandex.practicum.model;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 @Data
 public class Film {
@@ -25,4 +27,12 @@ public class Film {
 
     @Positive
     private int duration;
+
+
+    @JsonAnySetter
+    public void setAdditionalProperty(String key) {
+        if (!Arrays.asList("id", "name", "description", "releaseDate", "duration").contains(key)) {
+            throw new IllegalArgumentException("Unknown property: " + key);
+        }
+    }
 }

@@ -36,7 +36,7 @@ public class FilmController {
     @ExceptionHandler(ValidationException.class)
     public Film createFilm(@Valid @RequestBody Film film) {
         film.setId(getNextId());
-        setFilmIdAndCheckDate(film);
+        checkFilmDate(film);
         films.put(film.getId(), film);
         return film;
     }
@@ -44,14 +44,14 @@ public class FilmController {
     @PutMapping
     @ExceptionHandler(ValidationException.class)
     public Film updateFilm(@Valid @RequestBody Film film) {
-        setFilmIdAndCheckDate(film);
+        checkFilmDate(film);
         if (films.containsKey(film.getId())) {
         films.put(film.getId(), film);
         }
         return film;
     }
 
-    private void setFilmIdAndCheckDate(Film film) {
+    private void checkFilmDate(Film film) {
         LocalDate date = film.getReleaseDate();
         LocalDate localDateTime = LocalDate.of(1895, 12, 28);
         if (date.isBefore(localDateTime)) {
