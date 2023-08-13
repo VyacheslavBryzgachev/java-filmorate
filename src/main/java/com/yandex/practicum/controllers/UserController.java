@@ -32,25 +32,25 @@ public class UserController {
 
     @PostMapping
     @ExceptionHandler(ValidationException.class)
-    public User createUser(@Validated @RequestBody User user) {
+    public User createUser(@Validated(User.class) @RequestBody User user) {
         user.setId(getNextId());
-        checkNameIsNotBlank(user);
+        checkNameIsNotNull(user);
         users.put(user.getId(), user);
         return user;
     }
 
     @PutMapping
     @ExceptionHandler(ValidationException.class)
-    public User updateUser(@Validated @RequestBody User user) {
-        checkNameIsNotBlank(user);
+    public User updateUser(@Validated(User.class) @RequestBody User user) {
+        checkNameIsNotNull(user);
        if (users.containsKey(user.getId())) {
            users.put(user.getId(), user);
        }
         return user;
     }
 
-    private void checkNameIsNotBlank(User user) {
-            if (user.getName().isBlank() || user.getName().isEmpty()) {
+    private void checkNameIsNotNull(User user) {
+            if (user.getName() == null) {
                 user.setName(user.getLogin());
             }
     }

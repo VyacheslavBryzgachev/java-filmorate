@@ -34,7 +34,7 @@ public class FilmController {
 
     @PostMapping
     @ExceptionHandler(ValidationException.class)
-    public Film createFilm(@Validated @RequestBody Film film) {
+    public Film createFilm(@Validated(Film.class) @RequestBody Film film) {
         film.setId(getNextId());
         setFilmIdAndCheckDate(film);
         films.put(film.getId(), film);
@@ -43,7 +43,7 @@ public class FilmController {
 
     @PutMapping
     @ExceptionHandler(ValidationException.class)
-    public Film updateFilm(@Validated @RequestBody Film film) {
+    public Film updateFilm(@Validated(Film.class) @RequestBody Film film) {
         setFilmIdAndCheckDate(film);
         if (films.containsKey(film.getId())) {
         films.put(film.getId(), film);
