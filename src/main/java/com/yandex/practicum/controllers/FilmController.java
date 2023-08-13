@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class FilmController {
 
     @PostMapping
     @ExceptionHandler(ValidationException.class)
-    public Film createFilm(@Validated(Film.class) @RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         film.setId(getNextId());
         setFilmIdAndCheckDate(film);
         films.put(film.getId(), film);
