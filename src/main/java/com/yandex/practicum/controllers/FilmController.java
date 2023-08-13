@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/film")
+@RequestMapping("/films")
 @Slf4j
 public class FilmController {
 
@@ -42,12 +42,8 @@ public class FilmController {
     @PatchMapping
     public Film updateFilm(@RequestBody Film film) {
         setFilmIdAndCheckDate(film);
-        int id = film.getId();
-        for (Film f : films.values()) {
-            if (f.getId() == id) {
-                films.remove(id);
-                films.put(film.getId(), film);
-            }
+        if(films.containsKey(film.getId())) {
+        films.put(film.getId(), film);
         }
         return film;
     }

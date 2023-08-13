@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Slf4j
 public class UserController {
 
@@ -42,12 +42,9 @@ public class UserController {
     @PatchMapping
     public User updateUser(@Valid @RequestBody User user) {
         checkNameIsNotBlank(user);
-        int id = user.getId();
-        for (User u : users.values()) {
-            if (u.getId() == id) {
-                users.put(user.getId(), user);
-            }
-        }
+       if(users.containsKey(user.getId())) {
+           users.put(user.getId(), user);
+       }
         return user;
     }
 
