@@ -4,6 +4,7 @@ import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.model.Film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public class FilmController {
 
     @PostMapping
     @ExceptionHandler(ValidationException.class)
-    public Film createFilm(@Valid @RequestBody Film film) {
+    public Film createFilm(@Validated @RequestBody Film film) {
         film.setId(getNextId());
         setFilmIdAndCheckDate(film);
         films.put(film.getId(), film);
@@ -43,7 +44,7 @@ public class FilmController {
 
     @PutMapping
     @ExceptionHandler(ValidationException.class)
-    public Film updateFilm(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Validated @RequestBody Film film) {
         setFilmIdAndCheckDate(film);
         if (films.containsKey(film.getId())) {
         films.put(film.getId(), film);

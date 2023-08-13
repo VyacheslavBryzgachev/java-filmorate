@@ -3,6 +3,7 @@ package com.yandex.practicum.controllers;
 import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.model.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ public class UserController {
 
     @PostMapping
     @ExceptionHandler(ValidationException.class)
-    public User createUser(@Valid @RequestBody User user) {
+    public User createUser(@Validated @RequestBody User user) {
         user.setId(getNextId());
         checkNameIsNotBlank(user);
         users.put(user.getId(), user);
@@ -41,7 +42,7 @@ public class UserController {
 
     @PutMapping
     @ExceptionHandler(ValidationException.class)
-    public User updateUser(@Valid @RequestBody User user) {
+    public User updateUser(@Validated @RequestBody User user) {
         checkNameIsNotBlank(user);
        if (users.containsKey(user.getId())) {
            users.put(user.getId(), user);
