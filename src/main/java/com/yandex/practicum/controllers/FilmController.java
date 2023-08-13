@@ -4,6 +4,7 @@ import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.model.Film;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,6 +33,7 @@ public class FilmController {
     }
 
     @PostMapping
+    @ExceptionHandler(ValidationException.class)
     public Film createFilm(@Valid @RequestBody Film film) {
         film.setId(getNextId());
         setFilmIdAndCheckDate(film);
@@ -40,6 +42,7 @@ public class FilmController {
     }
 
     @PutMapping
+    @ExceptionHandler(ValidationException.class)
     public Film updateFilm(@RequestBody Film film) {
         setFilmIdAndCheckDate(film);
         if (films.containsKey(film.getId())) {
@@ -55,6 +58,8 @@ public class FilmController {
             throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата выхода фильма не может быть раньше чем 1895-12-28");
         }
     }
+
+
 
     private int getNextId() {
         return id++;

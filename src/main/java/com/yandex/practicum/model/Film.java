@@ -19,6 +19,7 @@ public class Film {
 
     @Size(max = 200)
     private String description;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, fallbackPatterns = {"yyyy.MM.dd"})
     private LocalDate releaseDate;
 

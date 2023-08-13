@@ -40,6 +40,7 @@ public class UserController {
     }
 
     @PutMapping
+    @ExceptionHandler(ValidationException.class)
     public User updateUser(@Valid @RequestBody User user) {
         checkNameIsNotBlank(user);
        if (users.containsKey(user.getId())) {
