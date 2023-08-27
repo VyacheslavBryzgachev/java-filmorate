@@ -25,7 +25,6 @@ public class UserController {
 
     private final InMemoryUserStorage inMemoryUserStorage;
 
-
     @Autowired
     public UserController(InMemoryUserStorage inMemoryUserStorage) {
     this.inMemoryUserStorage = inMemoryUserStorage;
@@ -35,6 +34,7 @@ public class UserController {
     public List<User> getAllUsers() {
         return inMemoryUserStorage.getAllUsers();
     }
+
     @GetMapping("{id}")
     public User getUserById(@PathVariable int id) {
         return inMemoryUserStorage.getUserById(id);
