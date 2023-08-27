@@ -36,7 +36,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilmById(int id) {
         Film film = films.get(id);
-        if(film == null) {
+        if (film == null) {
             throw new UnknownIdException("Фильма с таким id=" + id +  " не найдено");
         }
         return film;
@@ -55,8 +55,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         checkFilmDate(film);
         if (films.containsKey(film.getId())) {
             films.put(film.getId(), film);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Такого id=" + film.getId() + " не найдено");
         }
         return film;
@@ -79,13 +78,11 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteLike(int userId, int filmId) {
         User user = inMemoryUserStorage.getUserById(userId);
         Film film = films.get(filmId);
-        if(user == null) {
+        if (user == null) {
             throw new UnknownIdException("Пользователя с таким id=" + userId + " не найдено");
-        }
-        else if (film == null) {
+        } else if (film == null) {
             throw new UnknownIdException("Фильма с таким id=" + filmId + " не найдено");
-        }
-        else {
+        } else {
             film.setLikes(film.getLikes() - 1);
         }
     }
@@ -94,7 +91,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getMostPopularFilms(int count) {
         List<Film> sortedFilms = new ArrayList<>(films.values());
         Collections.sort(sortedFilms);
-        if(sortedFilms.size() < count) {
+        if (sortedFilms.size() < count) {
             count = sortedFilms.size();
         }
         return sortedFilms.subList(0, count);

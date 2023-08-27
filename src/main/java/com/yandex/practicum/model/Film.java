@@ -9,9 +9,8 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-
 @Data
-public class Film implements Comparable<Film>{
+public class Film implements Comparable<Film> {
 
     private int id;
 
@@ -36,8 +35,7 @@ public class Film implements Comparable<Film>{
             return 0;
         } else if (this.likes < o.likes) {
             return -1;
-        }
-        else {
+        } else {
             return 1;
         }
     }

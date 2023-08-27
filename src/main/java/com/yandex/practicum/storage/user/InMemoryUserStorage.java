@@ -24,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public User getUserById(int id) {
         User user = users.get(id);
-        if(user == null) {
+        if (user == null) {
             throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
         }
         return users.get(id);
@@ -43,8 +43,7 @@ public class InMemoryUserStorage implements UserStorage {
         checkNameIsNotNull(user);
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Пользователя с таким id= " + user.getId() + " не найдено");
         }
         return user;
@@ -53,17 +52,15 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void addToFriends(int id, int friendId) {
         User user = users.get(id);
-        if(user != null) {
+        if (user != null) {
             user.getFriends().add(friendId);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
         }
         User otherUser = users.get(friendId);
-        if(otherUser != null) {
+        if (otherUser != null) {
             otherUser.getFriends().add(id);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Пользователя с таким id=" + friendId + " не найдено");
         }
     }
@@ -71,17 +68,15 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public void deleteFromFriends(int id, int friendId) {
         User user = users.get(id);
-        if(user != null) {
+        if (user != null) {
             user.getFriends().remove(friendId);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
         }
         User otherUser = users.get(friendId);
-        if(otherUser != null) {
+        if (otherUser != null) {
             otherUser.getFriends().remove(id);
-        }
-        else {
+        } else {
             throw new UnknownIdException("Пользователя с таким id=" + friendId + " не найдено");
         }
     }
@@ -92,7 +87,7 @@ public class InMemoryUserStorage implements UserStorage {
         Set<Integer> friendsIds = user.getFriends();
         List<User> userFriends = new ArrayList<>();
         for (int friend : friendsIds) {
-            if(users.containsKey(friend)) {
+            if (users.containsKey(friend)) {
                 User u = users.get(friend);
                 userFriends.add(u);
             }
@@ -107,8 +102,8 @@ public class InMemoryUserStorage implements UserStorage {
         Set<Integer> userFriendIds = user.getFriends();
         Set<Integer> otherFriendIds = otherUser.getFriends();
         List<User> commonFriends = new ArrayList<>();
-        for(int userFriend : userFriendIds) {
-            if(otherFriendIds.contains(userFriend)) {
+        for (int userFriend : userFriendIds) {
+            if (otherFriendIds.contains(userFriend)) {
                 commonFriends.add(users.get(userFriend));
             }
         }
