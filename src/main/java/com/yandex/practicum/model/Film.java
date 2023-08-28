@@ -8,9 +8,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-public class Film implements Comparable<Film> {
+public class Film {
 
     private int id;
 
@@ -27,16 +30,12 @@ public class Film implements Comparable<Film> {
     @Positive
     private int duration;
 
-    private int likes;
+    private Set<Integer> likes = new HashSet<>();
 
-    @Override
-    public int compareTo(Film o) {
-        if (this.likes == o.likes) {
-            return 0;
-        } else if (this.likes < o.likes) {
-            return -1;
-        } else {
-            return 1;
+    public static final Comparator<Film> COMPARE_BY_LIKES = new Comparator<Film>() {
+        @Override
+        public int compare(Film o1, Film o2) {
+            return o1.getLikes().size() - o2.getLikes().size();
         }
-    }
+    };
 }

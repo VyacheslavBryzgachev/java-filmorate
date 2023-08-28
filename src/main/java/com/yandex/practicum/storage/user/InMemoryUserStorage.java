@@ -2,15 +2,16 @@ package com.yandex.practicum.storage.user;
 
 import com.yandex.practicum.exceptions.UnknownIdException;
 import com.yandex.practicum.model.User;
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Component
+@Getter
 public class InMemoryUserStorage implements UserStorage {
 
     Map<Integer, User> users = new HashMap<>();
@@ -27,7 +28,7 @@ public class InMemoryUserStorage implements UserStorage {
         if (user == null) {
             throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
         }
-        return users.get(id);
+        return user;
     }
 
     @Override
@@ -47,67 +48,6 @@ public class InMemoryUserStorage implements UserStorage {
             throw new UnknownIdException("Пользователя с таким id= " + user.getId() + " не найдено");
         }
         return user;
-    }
-
-    @Override
-    public void addToFriends(int id, int friendId) {
-        User user = users.get(id);
-        if (user != null) {
-            user.getFriends().add(friendId);
-        } else {
-            throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
-        }
-        User otherUser = users.get(friendId);
-        if (otherUser != null) {
-            otherUser.getFriends().add(id);
-        } else {
-            throw new UnknownIdException("Пользователя с таким id=" + friendId + " не найдено");
-        }
-    }
-
-    @Override
-    public void deleteFromFriends(int id, int friendId) {
-        User user = users.get(id);
-        if (user != null) {
-            user.getFriends().remove(friendId);
-        } else {
-            throw new UnknownIdException("Пользователя с таким id=" + id + " не найдено");
-        }
-        User otherUser = users.get(friendId);
-        if (otherUser != null) {
-            otherUser.getFriends().remove(id);
-        } else {
-            throw new UnknownIdException("Пользователя с таким id=" + friendId + " не найдено");
-        }
-    }
-
-    @Override
-    public List<User> getUserFriends(int id) {
-        User user = users.get(id);
-        Set<Integer> friendsIds = user.getFriends();
-        List<User> userFriends = new ArrayList<>();
-        for (int friend : friendsIds) {
-            if (users.containsKey(friend)) {
-                User u = users.get(friend);
-                userFriends.add(u);
-            }
-        }
-        return userFriends;
-    }
-
-    @Override
-    public List<User> getCommonFriends(int id, int otherId) {
-        User user = users.get(id);
-        User otherUser = users.get(otherId);
-        Set<Integer> userFriendIds = user.getFriends();
-        Set<Integer> otherFriendIds = otherUser.getFriends();
-        List<User> commonFriends = new ArrayList<>();
-        for (int userFriend : userFriendIds) {
-            if (otherFriendIds.contains(userFriend)) {
-                commonFriends.add(users.get(userFriend));
-            }
-        }
-        return commonFriends;
     }
 
     private void checkNameIsNotNull(User user) {
