@@ -1,11 +1,12 @@
 package com.yandex.practicum.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class ValidationException  extends ResponseStatusException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class ValidationException extends RuntimeException {
 
-    public ValidationException(HttpStatus status, String reason) {
-        super(status, reason);
+    public ValidationException(String message) {
+        super(message);
     }
 }

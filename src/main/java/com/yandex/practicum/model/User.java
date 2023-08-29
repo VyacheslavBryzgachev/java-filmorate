@@ -4,15 +4,16 @@ import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
-    @Max(200)
+
     private int id;
 
     @NotBlank
@@ -28,4 +29,6 @@ public class User {
     @Past
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, fallbackPatterns = {"yyyy.MM.dd"})
     private LocalDate birthday;
+
+    private Set<Integer> friends = new HashSet<>();
 }

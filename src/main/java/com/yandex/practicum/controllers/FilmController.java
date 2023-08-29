@@ -1,68 +1,60 @@
 package com.yandex.practicum.controllers;
 
-import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.model.Film;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import com.yandex.practicum.service.FilmService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/films")
-@Slf4j
+@RequiredArgsConstructor
 public class FilmController {
 
-    Map<Integer, Film> films = new HashMap<>();
-    int id = 1;
+    private final FilmService filmService;
 
     @GetMapping
     public List<Film> getAllFilms() {
-        return new ArrayList<>(films.values());
+        return filmService.getAllFilms();
+    }
+
+    @GetMapping("{id}")
+    public Film getFilmById(@PathVariable int id) {
+        return filmService.getFilmById(id);
     }
 
     @PostMapping
-    @ExceptionHandler(ValidationException.class)
     public Film createFilm(@Valid @RequestBody Film film) {
-        film.setId(getNextId());
-        checkFilmDate(film);
-        films.put(film.getId(), film);
-        return film;
+        return filmService.createFilm(film);
     }
 
     @PutMapping
-    @ExceptionHandler(ValidationException.class)
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if (!(films.containsKey(film.getId()))) {
-            throw new ValidationException(HttpStatus.INTERNAL_SERVER_ERROR, "Фильма с таким id не найдено");
-        }
-            checkFilmDate(film);
-            if (films.containsKey(film.getId())) {
-                films.put(film.getId(), film);
-            }
-        return film;
+      return filmService.updateFilm(film);
     }
 
-    private void checkFilmDate(Film film) {
-        LocalDate date = film.getReleaseDate();
-        LocalDate localDateTime = LocalDate.of(1895, 12, 28);
-        if (date.isBefore(localDateTime)) {
-            throw new ValidationException(HttpStatus.BAD_REQUEST, "Дата выхода фильма не может быть раньше чем 1895-12-28");
-        }
+    @PutMapping("/{id}/like/{userId}")
+    public void likeFilm(@Valid @PathVariable int id, @PathVariable int userId) {
+    filmService.likeFilm(id, userId);
     }
 
-    private int getNextId() {
-        return id++;
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@Valid @PathVariable int id, @PathVariable int userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getMostPopularFilms(@Valid @RequestParam (value = "count", defaultValue = "10", required = false) int count) {
+        return filmService.getMostPopularFilms(count);
     }
 }
