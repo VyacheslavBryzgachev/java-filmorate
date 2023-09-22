@@ -1,65 +1,75 @@
 package com.yandex.practicum.service;
 
-import com.yandex.practicum.exceptions.UnknownIdException;
+import com.yandex.practicum.dao.FilmDbStorage;
+import com.yandex.practicum.dao.LikedFilmsDbStorage;
 import com.yandex.practicum.model.Film;
-import com.yandex.practicum.model.User;
-import com.yandex.practicum.storage.film.InMemoryFilmStorage;
-import com.yandex.practicum.storage.user.InMemoryUserStorage;
+import com.yandex.practicum.model.Genre;
+import com.yandex.practicum.model.Mpa;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class FilmService {
 
-    private final InMemoryUserStorage inMemoryUserStorage;
-    private final InMemoryFilmStorage inMemoryFilmStorage;
+    private final FilmDbStorage filmDbStorage;
+    private final LikedFilmsDbStorage likedFilmsDbStorage;
+    private final MpaService mpaService;
 
     public List<Film> getAllFilms() {
-        return inMemoryFilmStorage.getAllFilms();
+        List<Film> allFilms = filmDbStorage.getAllFilms();
+        for (Film film : allFilms) {
+            Mpa mpa = mpaService.getMpaById(film.getMpa().getId());
+            film.setMpa(mpa);
+        }
+        return allFilms;
     }
 
     public Film getFilmById(int id) {
-        return inMemoryFilmStorage.getFilmById(id);
+        Film film = filmDbStorage.getFilmById(id);
+        Mpa mpa = mpaService.getMpaById(film.getMpa().getId());
+        film.setMpa(mpa);
+        return film;
     }
 
     public Film createFilm(Film film) {
-        return inMemoryFilmStorage.createFilm(film);
+        film = filmDbStorage.createFilm(film);
+        Mpa mpa = mpaService.getMpaById(film.getMpa().getId());
+        List<Genre> genres = film.getGenres();
+        film.setGenres(genres);
+        film.setMpa(mpa);
+        return film;
     }
 
     public Film updateFilm(Film film) {
-        return inMemoryFilmStorage.updateFilm(film);
+        film = filmDbStorage.updateFilm(film);
+        Mpa mpa = mpaService.getMpaById(film.getMpa().getId());
+        List<Genre> genres = film.getGenres();
+        film.setMpa(mpa);
+        film.setGenres(genres);
+        return film;
     }
 
     public void likeFilm(int userId, int filmId) {
-        User user = inMemoryUserStorage.getUserById(userId);
-        Film film = inMemoryFilmStorage.getFilmById(filmId);
-        if (user == null) {
-            throw new UnknownIdException("Пользователя с таким id=" + userId + " не найдено");
-        } else if (film == null) {
-            throw new UnknownIdException("Фильма с таким id=" + filmId + " не найдено");
-        } else {
-            film.getLikes().add(user.getId());
-        }
+        likedFilmsDbStorage.likeFilm(userId, filmId);
+        Film film = filmDbStorage.getFilmById(filmId);
+        Set<Integer> filmLikes = film.getLikes();
+        filmLikes.add(userId);
     }
 
     public void deleteLike(int userId, int filmId) {
-        User user = inMemoryUserStorage.getUserById(userId);
-        Film film = inMemoryFilmStorage.getFilmById(filmId);
-        if (user == null) {
-            throw new UnknownIdException("Пользователя с таким id=" + userId + " не найдено");
-        } else if (film == null) {
-            throw new UnknownIdException("Фильма с таким id=" + filmId + " не найдено");
-        } else {
-            film.getLikes().remove(userId);
-        }
+        likedFilmsDbStorage.deleteLike(userId, filmId);
+        Film film = filmDbStorage.getFilmById(filmId);
+        Set<Integer> filmLikes = film.getLikes();
+        filmLikes.remove(userId);
     }
 
     public List<Film> getMostPopularFilms(int count) {
-        List<Film> sortedFilms = new ArrayList<>(inMemoryFilmStorage.getAllFilms());
+        List<Film> sortedFilms = new ArrayList<>(getAllFilms());
         sortedFilms.sort(Film.COMPARE_BY_LIKES);
         int size = sortedFilms.size();
         if (sortedFilms.size() < count) {
