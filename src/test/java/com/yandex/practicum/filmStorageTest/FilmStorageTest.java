@@ -53,7 +53,7 @@ public class FilmStorageTest {
         Assertions.assertEquals(LocalDate.of(1989, 04, 17), getFilm.getReleaseDate());
         Assertions.assertEquals(120, getFilm.getDuration());
         Assertions.assertEquals(List.of(new Genre(2, "Драма")), getFilm.getGenres());
-        Assertions.assertEquals(new Mpa(3, null), getFilm.getMpa());
+        Assertions.assertEquals(new Mpa(3, "PG-13"), getFilm.getMpa());
     }
 
     @Test
@@ -74,6 +74,6 @@ public class FilmStorageTest {
         Assertions.assertEquals(LocalDate.of(1989, 04, 17), film.getReleaseDate());
         Assertions.assertEquals(120, film.getDuration());
         Assertions.assertEquals(List.of(new Genre(2, "Драма")), film.getGenres());
-        Assertions.assertEquals(new Mpa(3, null), film.getMpa());
+        Assertions.assertEquals(new Mpa(3, "PG-13"), film.getMpa());
     }
 }
