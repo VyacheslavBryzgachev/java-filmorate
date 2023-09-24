@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,8 +31,9 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(int id) {
-       Set<Integer> friends = new HashSet<>(template.queryForList("SELECT f.friend_id FROM USERS u LEFT JOIN User_Friends f ON u.id = f.user_id WHERE u.id = ?",
-               Integer.class, id));
+        List<Integer> friendIds = template.queryForList("SELECT f.friend_id FROM USERS u LEFT JOIN User_Friends f ON u.id = f.user_id WHERE u.id = ?",
+                Integer.class, id);
+        Set<Integer> friends = new HashSet<>(friendIds.isEmpty() ? friendIds : Collections.emptyList());
             User user = template.query("SELECT * FROM USERS WHERE id =?", new Object[]{id}, new BeanPropertyRowMapper<>(User.class))
                     .stream().findAny().orElseThrow(() -> new UnknownIdException("Пользователя с таким id=" + id + " не найдено"));
             user.setFriends(friends);

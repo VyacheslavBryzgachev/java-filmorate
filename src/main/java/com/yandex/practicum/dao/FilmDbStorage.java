@@ -1,7 +1,6 @@
 package com.yandex.practicum.dao;
 
 import com.yandex.practicum.exceptions.UnknownIdException;
-import com.yandex.practicum.exceptions.ValidationException;
 import com.yandex.practicum.mappers.FilmMapper;
 import com.yandex.practicum.model.Film;
 import com.yandex.practicum.model.Genre;
@@ -19,7 +18,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String allFilmsSql = "SELECT id, name, description, release_date, duration, mpa FROM FILMS";
+        String allFilmsSql = "SELECT f.*, m.NAME as mpa_name FROM FILMS f JOIN MPA M on f.MPA = M.id";
         List<Film> films = template.query(allFilmsSql, new FilmMapper());
         List<Integer> filmIds = new ArrayList<>();
         List<Genre> genres = new ArrayList<>();
@@ -54,7 +52,7 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public Film getFilmById(int id) {
         List<Genre> genres = findFilmGenres(id);
-        String filmSql = "SELECT * FROM FILMS WHERE id =?";
+        String filmSql = "SELECT f.*, m.NAME as mpa_name FROM FILMS f JOIN MPA M on f.MPA = M.id WHERE f.ID = ?";
         Film film = template.query(filmSql, new Object[] {id}, new FilmMapper())
                 .stream().findAny().orElseThrow(() -> new UnknownIdException("Фильма с таким id=" + id + " не найдено"));
         film.setGenres(genres);
@@ -68,7 +66,6 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        checkFilmDate(film);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         String sql = "INSERT INTO FILMS(name, description, release_date, duration, mpa) " +
                 "VALUES (?, ?, ?, ?, ?)";
@@ -98,23 +95,15 @@ public class FilmDbStorage implements FilmStorage {
         template.update(sql,
                 film.getName(), film.getDescription(), film.getReleaseDate(), film.getDuration(), film.getMpa().getId(), film.getId());
         updateGenreByFilmToStorage(film);
-            return getFilmById(film.getId());
-    }
-
-    private void checkFilmDate(Film film) {
-        LocalDate date = film.getReleaseDate();
-        LocalDate localDateTime = LocalDate.of(1895, 12, 28);
-        if (date.isBefore(localDateTime)) {
-            throw new ValidationException("Дата выхода фильма не может быть раньше чем 1895-12-28");
-        }
+        return getFilmById(film.getId());
     }
 
     private void checkFilm(int id) {
-        template.query("SELECT * FROM FILMS WHERE id=?", new Object[]{id}, new FilmMapper())
+        template.query("SELECT f.*, m.NAME as mpa_name FROM FILMS f JOIN MPA M on f.MPA = M.id WHERE f.ID = ?", new Object[]{id}, new FilmMapper())
                 .stream().findAny().orElseThrow(() -> new UnknownIdException("Фильма с таким id=" + id + " не найдено"));
     }
 
-    public void updateGenreByFilmToStorage(Film film) {
+     private void updateGenreByFilmToStorage(Film film) {
         String sqlForDeleteGenre = "DELETE FROM FILM_GENRES WHERE FILM_ID = ?";
         template.update(sqlForDeleteGenre, film.getId());
 

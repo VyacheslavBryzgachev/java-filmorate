@@ -25,9 +25,7 @@ create table IF NOT EXISTS Users (
        login VARCHAR(50) not null ,
        name VARCHAR(50),
        birthday DATETIME,
-        CONSTRAINT PK_USERS PRIMARY KEY (id),
-        CONSTRAINT UC_USERS_EMAIL UNIQUE (email),
-        CONSTRAINT UC_USERS_LOGIN UNIQUE (login)
+        CONSTRAINT PK_USERS PRIMARY KEY (id)
 );
 CREATE TABLE IF NOT EXISTS User_friends (
      user_id INTEGER,

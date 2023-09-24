@@ -32,7 +32,7 @@ public class LikedFilmsDbStorage implements LikedFilmsStorage {
     }
 
     private void checkFilm(int id) {
-        template.query("SELECT * FROM FILMS WHERE id=?", new Object[]{id}, new FilmMapper())
+        template.query("SELECT f.*, m.NAME as mpa_name FROM FILMS f JOIN MPA M on f.MPA = M.id WHERE f.ID = ?", new Object[]{id}, new FilmMapper())
                 .stream().findAny().orElseThrow(() -> new UnknownIdException("Фильма с таким id=" + id + " не найдено"));
     }
 }

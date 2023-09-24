@@ -21,6 +21,7 @@ public class FilmMapper implements RowMapper<Film> {
 
         Mpa mpa = new Mpa();
         mpa.setId(rs.getInt("mpa"));
+        mpa.setName(rs.getString("mpa_name"));
         film.setMpa(mpa);
         return film;
     }
