@@ -1,6 +1,9 @@
 package com.yandex.practicum.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Email;
@@ -11,7 +14,10 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+@With
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     private int id;
